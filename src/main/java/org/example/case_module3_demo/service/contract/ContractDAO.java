@@ -3,29 +3,27 @@ package org.example.case_module3_demo.service.contract;
 import org.example.case_module3_demo.model.Boarding_House;
 import org.example.case_module3_demo.model.Client;
 import org.example.case_module3_demo.model.Contract;
+import org.example.case_module3_demo.model.DTO.ContractDTO;
 import org.example.case_module3_demo.model.Staff;
 import org.example.case_module3_demo.service.ConnectionDB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class ContractDAO implements IContractDAO {
     private Connection connection = ConnectionDB.getConnection();
-    private static final String INSERT_CONTRACT_SQL = "insert into contract(id_hop_dong, id_nha, id_kh, id_nv, ngay_hd, gia_thue, tien_dat_coc, dieu_khoan) values (?, ?, ?, ?, ?,?,?,?);";
-    private static final String UPDATE_BOARDING_HOUSE_SQL = "update contract set trang_thai='Đã Thuê' where id_nha=?";
+    private static final String INSERT_CONTRACT_SQL = "call insert_into_contract(?, ?, ?, ?, ?,?,?,?);";
     private static final String SELECT_CONTRACT_BY_ID = "select * from contract where id_hop_dong = ?;";
     private static final String SELECT_ALL_CONTRACT = "select * from contract;";
     private static final String DELETE_CONTRACT_BY_ID = "delete from contract where id_hop_dong = ?;";
     private static final String UPDATE_CONTRACT_SQL = "update contract set id_nha=?, id_kh=?, id_nv=?, ngay_hd=?, gia_thue=?, tien_dat_coc=?, dieu_khoan=?  where id_hop_dong = ?;";
+    private static final String SHOW_ALL_CONTRACT_DTO ="call show_all_contract_dto();";
 
     @Override
     public void insertInto(Contract contract) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(INSERT_CONTRACT_SQL);
+        CallableStatement statement = connection.prepareCall(INSERT_CONTRACT_SQL);
         statement.setString(1, contract.getId_hop_dong());
         statement.setString(2, contract.getBoardingHouse().getId_nha());
         statement.setString(3, contract.getClient().getId_kh());
@@ -37,10 +35,6 @@ public class ContractDAO implements IContractDAO {
         statement.setDouble(7, contract.getTien_dat_coc());
         statement.setString(8, contract.getDieu_khoan());
         statement.executeUpdate();
-
-        PreparedStatement statement1 = connection.prepareStatement(UPDATE_BOARDING_HOUSE_SQL);
-        statement.setString(1, contract.getBoardingHouse().getId_nha());
-        statement1.executeUpdate();
     }
 
     @Override
@@ -53,14 +47,19 @@ public class ContractDAO implements IContractDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                Boarding_House id_nha = (Boarding_House) rs.getObject("id_nha");
-                Client id_kh = (Client) rs.getObject("id_kh");
-                Staff id_nv = (Staff) rs.getObject("id_nv");
+                String id_nha = rs.getString("id_nha");
+                String id_kh = rs.getString("id_kh");
+                String id_nv = rs.getString("id_nv");
                 Date ngay_hd = rs.getDate("ngay_hd");
                 double gia_thue = rs.getDouble("gia_thue");
                 double tien_dat_coc = rs.getDouble("tien_dat_coc");
                 String dieu_khoan = rs.getString("dieu_khoan");
-                contract = new Contract(id, id_nha, id_kh, id_nv, ngay_hd, gia_thue, tien_dat_coc, dieu_khoan);
+
+                Boarding_House boardingHouse = new Boarding_House(id_nha);
+                Client client = new Client(id_kh);
+                Staff staff = new Staff(id_nv);
+
+                contract = new Contract(id, boardingHouse, client, staff, ngay_hd, gia_thue, tien_dat_coc, dieu_khoan);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -78,7 +77,7 @@ public class ContractDAO implements IContractDAO {
 
             while (rs.next()) {
                 String id_hop_dong = rs.getString("id_hop_dong");
-                String id_nha =  rs.getString("id_nha");
+                String id_nha = rs.getString("id_nha");
                 String id_kh = rs.getString("id_kh");
                 String id_nv = rs.getString("id_nv");
                 Date ngay_hd = rs.getDate("ngay_hd");
@@ -86,9 +85,9 @@ public class ContractDAO implements IContractDAO {
                 double tien_dat_coc = rs.getDouble("tien_dat_coc");
                 String dieu_khoan = rs.getString("dieu_khoan");
 
-                Boarding_House boardingHouse=new Boarding_House(id_nha);
-                Client client=new Client(id_kh);
-                Staff staff=new Staff(id_nv);
+                Boarding_House boardingHouse = new Boarding_House(id_nha);
+                Client client = new Client(id_kh);
+                Staff staff = new Staff(id_nv);
 
                 contracts.add(new Contract(id_hop_dong, boardingHouse, client, staff, ngay_hd, gia_thue, tien_dat_coc, dieu_khoan));
             }
@@ -99,9 +98,9 @@ public class ContractDAO implements IContractDAO {
     }
 
     public static void main(String[] args) {
-        ContractDAO contractDAO=new ContractDAO();
-        List<Contract> contractList= contractDAO.selectAll();
-        for (Contract contract: contractList){
+        ContractDAO contractDAO = new ContractDAO();
+        List<Contract> contractList = contractDAO.selectAll();
+        for (Contract contract : contractList) {
             System.out.println(contract);
         }
     }
@@ -131,5 +130,33 @@ public class ContractDAO implements IContractDAO {
         preparedStatement.setString(8, contract.getId_hop_dong());
 
         rowUpdate = preparedStatement.executeUpdate() > 0;
-        return rowUpdate;    }
+        return rowUpdate;
+    }
+
+    public List<ContractDTO> showAllContractDTO(){
+        List<ContractDTO> contractDTOS=new ArrayList<>();
+        try {
+            CallableStatement statement=connection.prepareCall(SHOW_ALL_CONTRACT_DTO);
+            ResultSet resultSet=statement.executeQuery();
+            while (resultSet.next()){
+                String id_hop_dong=resultSet.getString("id_hop_dong");
+                String ten_kh=resultSet.getString("ten_kh");
+                int dien_thoai_kh= resultSet.getInt("dien_thoai_kh");
+                String ten_nv=resultSet.getString("ten_nv");
+                String vai_tro=resultSet.getString("vai_tro");
+                int dien_thoai_nv= resultSet.getInt("dien_thoai_nv");
+                Date ngay_hd=resultSet.getDate("ngay_hd");
+                double gia_thue=resultSet.getDouble("gia_thue");
+                double tien_dat_coc= resultSet.getDouble("tien_dat_coc");
+                String dieu_khoan=resultSet.getString("dieu_khoan");
+
+                ContractDTO contractDTO=new ContractDTO(id_hop_dong,ten_kh,dien_thoai_kh,ten_nv,vai_tro,dien_thoai_nv,ngay_hd,gia_thue,tien_dat_coc,dieu_khoan);
+                contractDTOS.add(contractDTO);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return contractDTOS;
+    }
 }

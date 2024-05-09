@@ -7,8 +7,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientDAO implements IClientDAO{
-private Connection connection = ConnectionDB.getConnection();
+public class ClientDAO implements IClientDAO {
+    private Connection connection = ConnectionDB.getConnection();
     private static final String INSERT_CLIENT_SQL = "insert into client(id_kh, ten_kh, cmt_kh, dien_thoai_kh, dia_chi_lh) values (?, ?, ?, ?, ?);";
     private static final String SELECT_CLIENT_BY_ID = "select * from client where id_kh = ?;";
     private static final String SELECT_ALL_CLIENT = "select * from client;";

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Management Application</title>
+    <title>Contract Management Application</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
 </head>
 <body>
@@ -34,36 +34,46 @@
         </div>
     </header>
 
-    <div class="container">
-        <h1 class="text-center mt-5">Client Management</h1>
-        <div class="text-center mb-3">
-            <a href="client?action=create" class="btn btn-primary">Add New Client</a>
-        </div>
+    <div>
+        <h1 class="text-center mt-5">Contract Management</h1>
         <div class="table-responsive">
-            <caption><h2>List of Clients</h2></caption>
+            <h2 style="float: left;">List of Contract Detail</h2>
+            <p style="float: right;">
+                Sort By:
+                <button onclick="window.location.href='contract?action=client'">Contract ID</button>
+                <button onclick="window.location.href='contract?action=boardingHouse'">Contract Creation Date</button>
+                <button onclick="window.location.href='contract?action=staff'">Price</button>
+                <button onclick="window.location.href='contract?action=depositMoney'">Deposit Money</button>
+            </p>
+
             <table class="table table-bordered">
                 <thead class="thead-dark">
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>CMND</th>
-                    <th>Phone Number</th>
-                    <th>Address</th>
-                    <th>Action</th>
+                    <th>Contract ID</th>
+                    <th>Clien Name</th>
+                    <th>Client Phone Number</th>
+                    <th>Staff Name</th>
+                    <th>Role</th>
+                    <th>Staff Phone Number</th>
+                    <th>Contract Creation Date</th>
+                    <th>Price</th>
+                    <th>Deposit Money</th>
+                    <th>Condition</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="client" items="${listClient}">
+                <c:forEach var="contract" items="${listContractDTO}">
                     <tr>
-                        <td><c:out value="${client.id_kh}"/></td>
-                        <td><c:out value="${client.ten_kh}"/></td>
-                        <td><c:out value="${client.cmt_kh}"/></td>
-                        <td><c:out value="${client.dien_thoai_kh}"/></td>
-                        <td><c:out value="${client.dia_chi_lh}"/></td>
-                        <td>
-                            <a href="client?action=edit&id=${client.id_kh}" class="btn btn-info">Edit</a>
-                            <a href="client?action=delete&id=${client.id_kh}" class="btn btn-danger">Delete</a>
-                        </td>
+                        <td><c:out value="${contract.id_hop_dong}"/></td>
+                        <td><c:out value="${contract.ten_kh}"/></td>
+                        <td><c:out value="${contract.dien_thoai_kh}"/></td>
+                        <td><c:out value="${contract.ten_nv}"/></td>
+                        <td><c:out value="${contract.vai_tro}"/></td>
+                        <td><c:out value="${contract.dien_thoai_nv}"/></td>
+                        <td><c:out value="${contract.ngay_hd}"/></td>
+                        <td><c:out value="${contract.gia_thue}"/></td>
+                        <td><c:out value="${contract.tien_dat_coc}"/></td>
+                        <td><c:out value="${contract.dieu_khoan}"/></td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -73,6 +83,3 @@
 </div>
 </body>
 </html>
-
-
-

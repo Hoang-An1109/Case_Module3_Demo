@@ -3,9 +3,12 @@ package org.example.case_module3_demo.controller;
 import org.example.case_module3_demo.model.Boarding_House;
 import org.example.case_module3_demo.model.Client;
 import org.example.case_module3_demo.model.Contract;
+import org.example.case_module3_demo.model.DTO.ContractDTO;
 import org.example.case_module3_demo.model.Staff;
+import org.example.case_module3_demo.service.boarding_House.BoardingHouseDAO;
 import org.example.case_module3_demo.service.client.ClientDAO;
 import org.example.case_module3_demo.service.contract.ContractDAO;
+import org.example.case_module3_demo.service.staff.StaffDAO;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,6 +27,9 @@ import java.util.List;
 public class ContractController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ContractDAO contractDAO = new ContractDAO();
+    private ClientDAO clientDAO = new ClientDAO();
+    private BoardingHouseDAO boardingHouseDAO = new BoardingHouseDAO();
+    private StaffDAO staffDAO = new StaffDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,9 +47,25 @@ public class ContractController extends HttpServlet {
             case "delete":
                 showDeleteForm(req, resp);
                 break;
+            case "contractDTO":
+                showAllContractDTO(req, resp);
+                break;
             default:
                 listContracts(req, resp);
                 break;
+        }
+    }
+
+    private void showAllContractDTO(HttpServletRequest req, HttpServletResponse resp) {
+        List<ContractDTO> contractDTOS=contractDAO.showAllContractDTO();
+        req.setAttribute("listContractDTO",contractDTOS);
+        RequestDispatcher requestDispatcher= req.getRequestDispatcher("contract/listDTO.jsp");
+        try {
+            requestDispatcher.forward(req,resp);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -89,7 +111,15 @@ public class ContractController extends HttpServlet {
     }
 
     private void showCreateForm(HttpServletRequest req, HttpServletResponse resp) {
+        String id = req.getParameter("id");
+        Boarding_House boardingHouses = boardingHouseDAO.selectById(id);
+        List<Client> clients = clientDAO.selectAll();
+        List<Staff> staffs = staffDAO.selectAll();
+        req.setAttribute("boardingHouse", boardingHouses);
+        req.setAttribute("client", clients);
+        req.setAttribute("staff", staffs);
         RequestDispatcher dispatcher = req.getRequestDispatcher("contract/create.jsp");
+
         try {
             dispatcher.forward(req, resp);
         } catch (ServletException e) {
@@ -156,9 +186,9 @@ public class ContractController extends HttpServlet {
         double tien_dat_coc = Double.parseDouble(req.getParameter("tien_dat_coc"));
         String dieu_khoan = req.getParameter("dieu_khoan");
 
-        Boarding_House boardingHouse=new Boarding_House(id_nha);
-        Client client=new Client(id_kh);
-        Staff staff=new Staff(id_nv);
+        Boarding_House boardingHouse = new Boarding_House(id_nha);
+        Client client = new Client(id_kh);
+        Staff staff = new Staff(id_nv);
 
         Contract contract = new Contract(id, boardingHouse, client, staff, ngay_hd, gia_thue, tien_dat_coc, dieu_khoan);
         try {
@@ -177,7 +207,7 @@ public class ContractController extends HttpServlet {
 
     private void insertContract(HttpServletRequest req, HttpServletResponse resp) {
         String id_hop_dong = req.getParameter("id_hop_dong");
-        String id_nha = req.getParameter("id_nha");
+        String id_nha = req.getParameter("id");
         String id_kh = req.getParameter("id_kh");
         String id_nv = req.getParameter("id_nv");
         Date ngay_hd = null;
@@ -191,9 +221,9 @@ public class ContractController extends HttpServlet {
         double tien_dat_coc = Double.parseDouble(req.getParameter("tien_dat_coc"));
         String dieu_khoan = req.getParameter("dieu_khoan");
 
-        Boarding_House boardingHouse=new Boarding_House(id_nha);
-        Client client=new Client(id_kh);
-        Staff staff=new Staff(id_nv);
+        Boarding_House boardingHouse = new Boarding_House(id_nha);
+        Client client = new Client(id_kh);
+        Staff staff = new Staff(id_nv);
 
         Contract contract = new Contract(id_hop_dong, boardingHouse, client, staff, ngay_hd, gia_thue, tien_dat_coc, dieu_khoan);
         try {
