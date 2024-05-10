@@ -50,18 +50,95 @@ public class ContractController extends HttpServlet {
             case "contractDTO":
                 showAllContractDTO(req, resp);
                 break;
+            case "findValueDTO":
+                showContractDTOFindByValue(req, resp);
+                break;
+            case "contractDTOOderById":
+                showAllContractDTOOderByID(req, resp);
+                break;
+            case "contractDTOOderByDate":
+                showAllContractDTOOderByDate(req, resp);
+                break;
+            case "contractDTOOderByPrice":
+                showAllContractDTOOderByPrice(req, resp);
+                break;
+            case "contractDTOOderByMoney":
+                showAllContractDTOOderByMoney(req, resp);
+                break;
             default:
                 listContracts(req, resp);
                 break;
         }
     }
 
-    private void showAllContractDTO(HttpServletRequest req, HttpServletResponse resp) {
-        List<ContractDTO> contractDTOS=contractDAO.showAllContractDTO();
-        req.setAttribute("listContractDTO",contractDTOS);
-        RequestDispatcher requestDispatcher= req.getRequestDispatcher("contract/listDTO.jsp");
+    private void showContractDTOFindByValue(HttpServletRequest req, HttpServletResponse resp) {
+        String value = req.getParameter("value");
+        List<ContractDTO> contractDTOS = contractDAO.findByValue(value);
+        req.setAttribute("listContractDTO", contractDTOS);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("contract/listDTOFindByValue.jsp");
         try {
-            requestDispatcher.forward(req,resp);
+            requestDispatcher.forward(req, resp);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void showAllContractDTO(HttpServletRequest req, HttpServletResponse resp) {
+        List<ContractDTO> contractDTOS = contractDAO.showAllContractDTO();
+        req.setAttribute("listContractDTO", contractDTOS);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("contract/listDTO.jsp");
+        try {
+            requestDispatcher.forward(req, resp);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void showAllContractDTOOderByID(HttpServletRequest req, HttpServletResponse resp) {
+        List<ContractDTO> contractDTOS = contractDAO.selectAllContractOderById();
+        req.setAttribute("listContractDTO", contractDTOS);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("contract/listDTOOderById.jsp");
+        try {
+            requestDispatcher.forward(req, resp);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void showAllContractDTOOderByDate(HttpServletRequest req, HttpServletResponse resp) {
+        List<ContractDTO> contractDTOS = contractDAO.selectAllContractOderByDate();
+        req.setAttribute("listContractDTO", contractDTOS);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("contract/listDTOOderByDate.jsp");
+        try {
+            requestDispatcher.forward(req, resp);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void showAllContractDTOOderByPrice(HttpServletRequest req, HttpServletResponse resp) {
+        List<ContractDTO> contractDTOS = contractDAO.selectAllContractOderByPrice();
+        req.setAttribute("listContractDTO", contractDTOS);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("contract/listDTOOderByPrice.jsp");
+        try {
+            requestDispatcher.forward(req, resp);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void showAllContractDTOOderByMoney(HttpServletRequest req, HttpServletResponse resp) {
+        List<ContractDTO> contractDTOS = contractDAO.selectAllContractOderByMoney();
+        req.setAttribute("listContractDTO", contractDTOS);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("contract/listDTOOderByMoney.jsp");
+        try {
+            requestDispatcher.forward(req, resp);
         } catch (ServletException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

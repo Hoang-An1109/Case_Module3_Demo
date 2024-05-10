@@ -109,4 +109,20 @@ public class ContractDTO {
     public void setDieu_khoan(String dieu_khoan) {
         this.dieu_khoan = dieu_khoan;
     }
+
+    @Override
+    public String toString() {
+        return "ContractDTO{" +
+                "id_hop_dong='" + id_hop_dong + '\'' +
+                ", ten_kh='" + ten_kh + '\'' +
+                ", dien_thoai_kh=" + dien_thoai_kh +
+                ", ten_nv='" + ten_nv + '\'' +
+                ", vai_tro='" + vai_tro + '\'' +
+                ", dien_thoai_nv=" + dien_thoai_nv +
+                ", ngay_hd=" + ngay_hd +
+                ", gia_thue=" + gia_thue +
+                ", tien_dat_coc=" + tien_dat_coc +
+                ", dieu_khoan='" + dieu_khoan + '\'' +
+                '}';
+    }
 }

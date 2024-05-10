@@ -33,7 +33,6 @@
                     </div>
                     <button type="submit" class="btn btn-success">Search</button>
                 </form>
-
             </div>
         </div>
     </header>

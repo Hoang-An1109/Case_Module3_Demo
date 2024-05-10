@@ -20,6 +20,15 @@ public class ContractDAO implements IContractDAO {
     private static final String DELETE_CONTRACT_BY_ID = "delete from contract where id_hop_dong = ?;";
     private static final String UPDATE_CONTRACT_SQL = "update contract set id_nha=?, id_kh=?, id_nv=?, ngay_hd=?, gia_thue=?, tien_dat_coc=?, dieu_khoan=?  where id_hop_dong = ?;";
     private static final String SHOW_ALL_CONTRACT_DTO ="call show_all_contract_dto();";
+    private static final String SHOW_CONTRACT_DTO_FIND_BY_VALUE ="call show_contract_dto_by_value(?);";
+    private static final String SHOW_ALL_CONTRACT_DTO_ODER_BY_ID ="call show_all_contract_dto_oder_by_id();";
+
+    private static final String SHOW_ALL_CONTRACT_DTO_ODER_BY_DATE ="call show_all_contract_dto_oder_by_ngay_hd();";
+
+    private static final String SHOW_ALL_CONTRACT_DTO_ODER_BY_PRICE ="call show_all_contract_dto_oder_by_gia_thue();";
+
+    private static final String SHOW_ALL_CONTRACT_DTO_ODER_BY_DEPOSIT_MONEY ="call show_all_contract_dto_oder_by_tien_dat_coc();";
+
 
     @Override
     public void insertInto(Contract contract) throws SQLException {
@@ -97,14 +106,6 @@ public class ContractDAO implements IContractDAO {
         return contracts;
     }
 
-    public static void main(String[] args) {
-        ContractDAO contractDAO = new ContractDAO();
-        List<Contract> contractList = contractDAO.selectAll();
-        for (Contract contract : contractList) {
-            System.out.println(contract);
-        }
-    }
-
     @Override
     public boolean deleteById(String id) throws SQLException {
         boolean rowDelete;
@@ -157,6 +158,145 @@ public class ContractDAO implements IContractDAO {
             throw new RuntimeException(e);
         }
 
+        return contractDTOS;
+    }
+    public List<ContractDTO> findByValue(String value){
+        List<ContractDTO> contractDTOS=new ArrayList<>();
+        try {
+            CallableStatement statement=connection.prepareCall(SHOW_CONTRACT_DTO_FIND_BY_VALUE);
+            statement.setString(1,value);
+            ResultSet resultSet= statement.executeQuery();
+            while (resultSet.next()){
+                String id_hop_dong=resultSet.getString("id_hop_dong");
+                String ten_kh=resultSet.getString("ten_kh");
+                int dien_thoai_kh= resultSet.getInt("dien_thoai_kh");
+                String ten_nv=resultSet.getString("ten_nv");
+                String vai_tro=resultSet.getString("vai_tro");
+                int dien_thoai_nv= resultSet.getInt("dien_thoai_nv");
+                Date ngay_hd=resultSet.getDate("ngay_hd");
+                double gia_thue=resultSet.getDouble("gia_thue");
+                double tien_dat_coc= resultSet.getDouble("tien_dat_coc");
+                String dieu_khoan=resultSet.getString("dieu_khoan");
+
+                ContractDTO contractDTO=new ContractDTO(id_hop_dong,ten_kh,dien_thoai_kh,ten_nv,vai_tro,dien_thoai_nv,ngay_hd,gia_thue,tien_dat_coc,dieu_khoan);
+                contractDTOS.add(contractDTO);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return contractDTOS;
+    }
+
+    public static void main(String[] args) {
+        ContractDAO contractDAO=new ContractDAO();
+        List<ContractDTO> contractDTOS=contractDAO.findByValue("C");
+        for (ContractDTO contractDTO: contractDTOS){
+            System.out.println(contractDTO);
+        }
+    }
+
+    public List<ContractDTO> selectAllContractOderById() {
+        List<ContractDTO> contractDTOS=new ArrayList<>();
+        try {
+            CallableStatement statement=connection.prepareCall(SHOW_ALL_CONTRACT_DTO_ODER_BY_ID);
+            ResultSet resultSet=statement.executeQuery();
+            while (resultSet.next()){
+                String id_hop_dong=resultSet.getString("id_hop_dong");
+                String ten_kh=resultSet.getString("ten_kh");
+                int dien_thoai_kh= resultSet.getInt("dien_thoai_kh");
+                String ten_nv=resultSet.getString("ten_nv");
+                String vai_tro=resultSet.getString("vai_tro");
+                int dien_thoai_nv= resultSet.getInt("dien_thoai_nv");
+                Date ngay_hd=resultSet.getDate("ngay_hd");
+                double gia_thue=resultSet.getDouble("gia_thue");
+                double tien_dat_coc= resultSet.getDouble("tien_dat_coc");
+                String dieu_khoan=resultSet.getString("dieu_khoan");
+
+                ContractDTO contractDTO=new ContractDTO(id_hop_dong,ten_kh,dien_thoai_kh,ten_nv,vai_tro,dien_thoai_nv,ngay_hd,gia_thue,tien_dat_coc,dieu_khoan);
+                contractDTOS.add(contractDTO);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return contractDTOS;
+    }
+
+    public List<ContractDTO> selectAllContractOderByDate() {
+        List<ContractDTO> contractDTOS=new ArrayList<>();
+        try {
+            CallableStatement statement=connection.prepareCall(SHOW_ALL_CONTRACT_DTO_ODER_BY_DATE);
+            ResultSet resultSet=statement.executeQuery();
+            while (resultSet.next()){
+                String id_hop_dong=resultSet.getString("id_hop_dong");
+                String ten_kh=resultSet.getString("ten_kh");
+                int dien_thoai_kh= resultSet.getInt("dien_thoai_kh");
+                String ten_nv=resultSet.getString("ten_nv");
+                String vai_tro=resultSet.getString("vai_tro");
+                int dien_thoai_nv= resultSet.getInt("dien_thoai_nv");
+                Date ngay_hd=resultSet.getDate("ngay_hd");
+                double gia_thue=resultSet.getDouble("gia_thue");
+                double tien_dat_coc= resultSet.getDouble("tien_dat_coc");
+                String dieu_khoan=resultSet.getString("dieu_khoan");
+
+                ContractDTO contractDTO=new ContractDTO(id_hop_dong,ten_kh,dien_thoai_kh,ten_nv,vai_tro,dien_thoai_nv,ngay_hd,gia_thue,tien_dat_coc,dieu_khoan);
+                contractDTOS.add(contractDTO);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return contractDTOS;
+    }
+
+    public List<ContractDTO> selectAllContractOderByPrice() {
+        List<ContractDTO> contractDTOS=new ArrayList<>();
+        try {
+            CallableStatement statement=connection.prepareCall(SHOW_ALL_CONTRACT_DTO_ODER_BY_PRICE);
+            ResultSet resultSet=statement.executeQuery();
+            while (resultSet.next()){
+                String id_hop_dong=resultSet.getString("id_hop_dong");
+                String ten_kh=resultSet.getString("ten_kh");
+                int dien_thoai_kh= resultSet.getInt("dien_thoai_kh");
+                String ten_nv=resultSet.getString("ten_nv");
+                String vai_tro=resultSet.getString("vai_tro");
+                int dien_thoai_nv= resultSet.getInt("dien_thoai_nv");
+                Date ngay_hd=resultSet.getDate("ngay_hd");
+                double gia_thue=resultSet.getDouble("gia_thue");
+                double tien_dat_coc= resultSet.getDouble("tien_dat_coc");
+                String dieu_khoan=resultSet.getString("dieu_khoan");
+
+                ContractDTO contractDTO=new ContractDTO(id_hop_dong,ten_kh,dien_thoai_kh,ten_nv,vai_tro,dien_thoai_nv,ngay_hd,gia_thue,tien_dat_coc,dieu_khoan);
+                contractDTOS.add(contractDTO);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return contractDTOS;
+    }
+
+    public List<ContractDTO> selectAllContractOderByMoney() {
+        List<ContractDTO> contractDTOS=new ArrayList<>();
+        try {
+            CallableStatement statement=connection.prepareCall(SHOW_ALL_CONTRACT_DTO_ODER_BY_DEPOSIT_MONEY);
+            ResultSet resultSet=statement.executeQuery();
+            while (resultSet.next()){
+                String id_hop_dong=resultSet.getString("id_hop_dong");
+                String ten_kh=resultSet.getString("ten_kh");
+                int dien_thoai_kh= resultSet.getInt("dien_thoai_kh");
+                String ten_nv=resultSet.getString("ten_nv");
+                String vai_tro=resultSet.getString("vai_tro");
+                int dien_thoai_nv= resultSet.getInt("dien_thoai_nv");
+                Date ngay_hd=resultSet.getDate("ngay_hd");
+                double gia_thue=resultSet.getDouble("gia_thue");
+                double tien_dat_coc= resultSet.getDouble("tien_dat_coc");
+                String dieu_khoan=resultSet.getString("dieu_khoan");
+
+                ContractDTO contractDTO=new ContractDTO(id_hop_dong,ten_kh,dien_thoai_kh,ten_nv,vai_tro,dien_thoai_nv,ngay_hd,gia_thue,tien_dat_coc,dieu_khoan);
+                contractDTOS.add(contractDTO);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return contractDTOS;
     }
 }
